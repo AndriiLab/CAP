@@ -2,6 +2,12 @@
   
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageVersion>3.1.2.1</PackageVersion>
+    <Authors>ncc;savorboard;AndriiLab</Authors>
+    <PackageProjectUrl>https://github.com/AndriiLab/CAP</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/AndriiLab/CAP/blob/master/LICENSE.txt</PackageLicenseUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/AndriiLab/CAP/master/docs/content/img/logo.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/AndriiLab/CAP</RepositoryUrl>
   </PropertyGroup>
   
   <PropertyGroup>
