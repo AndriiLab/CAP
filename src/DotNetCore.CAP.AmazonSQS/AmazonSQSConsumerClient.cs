@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Amazon.Auth.AccessControlPolicy;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using Amazon.SQS;
@@ -62,6 +63,9 @@ namespace DotNetCore.CAP.AmazonSQS
             }
 
             Connect(initSNS: false, initSQS: true);
+
+            GenerateSqsAccessPolicyAsync(topicArns, _queueUrl)
+                .GetAwaiter().GetResult();
 
             _snsClient.SubscribeQueueToTopicsAsync(topicArns, _sqsClient, _queueUrl)
                 .GetAwaiter().GetResult();
@@ -205,6 +209,32 @@ namespace DotNetCore.CAP.AmazonSQS
             OnLog?.Invoke(null, logArgs);
 
             return Task.CompletedTask;
+        }
+
+        private async Task GenerateSqsAccessPolicyAsync(IEnumerable<string> topicArns, string sqsQueueUrl)
+        {
+            var queueAttributes = await _sqsClient.GetAttributesAsync(sqsQueueUrl).ConfigureAwait(false);
+
+            var sqsQueueArn = queueAttributes["QueueArn"];
+
+            var policy = queueAttributes.TryGetValue("Policy", out var policyStr) && !string.IsNullOrEmpty(policyStr)
+                ? Policy.FromJson(policyStr)
+                : new Policy();
+
+            var topicArnsToAllow = topicArns
+                .Where(a => !policy.HasSqsPermission(a, sqsQueueArn))
+                .ToList();
+
+            if (!topicArnsToAllow.Any())
+            {
+                return;
+            }
+
+            policy.AddSqsPermissions(topicArnsToAllow, sqsQueueArn);
+            policy.CompactSqsPermissions(sqsQueueArn);
+
+            var setAttributes = new Dictionary<string, string> { { "Policy", policy.ToJson() } };
+            await _sqsClient.SetAttributesAsync(sqsQueueUrl, setAttributes).ConfigureAwait(false);
         }
 
         #endregion

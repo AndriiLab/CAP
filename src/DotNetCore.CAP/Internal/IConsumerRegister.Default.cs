@@ -67,6 +67,11 @@ namespace DotNetCore.CAP.Internal
 
             foreach (var matchGroup in groupingMatches)
             {
+                using (var client = _consumerClientFactory.Create(matchGroup.Key))
+                {
+                    client.Subscribe(matchGroup.Value.Select(x => x.TopicName));
+                }
+
                 for (int i = 0; i < _options.ConsumerThreadCount; i++)
                 {
                     Task.Factory.StartNew(() =>
@@ -78,8 +83,6 @@ namespace DotNetCore.CAP.Internal
                                 _serverAddress = client.BrokerAddress;
 
                                 RegisterMessageProcessor(client);
-
-                                client.Subscribe(matchGroup.Value.Select(x => x.TopicName));
 
                                 client.Listening(_pollingDelay, _cts.Token);
                             }
