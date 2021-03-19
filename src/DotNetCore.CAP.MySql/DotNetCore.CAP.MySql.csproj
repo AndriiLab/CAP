@@ -7,7 +7,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <DocumentationFile>bin\$(Configuration)\netstandard2.0\DotNetCore.CAP.MySql.xml</DocumentationFile>
+    <DocumentationFile>bin\$(Configuration)\netstandard2.1\DotNetCore.CAP.MySql.xml</DocumentationFile>
     <NoWarn>1701;1702;1705;CS1591</NoWarn>
   </PropertyGroup>
 
