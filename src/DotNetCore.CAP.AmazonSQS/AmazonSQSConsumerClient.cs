@@ -61,6 +61,9 @@ namespace DotNetCore.CAP.AmazonSQS
 
                 topicArns.Add(createTopicResponse.TopicArn);
             }
+            
+            GenerateSqsAccessPolicyAsync(topicArns, _queueUrl)
+                .GetAwaiter().GetResult();
 
             return topicArns;
         }
@@ -72,14 +75,9 @@ namespace DotNetCore.CAP.AmazonSQS
                 throw new ArgumentNullException(nameof(topics));
             }
 
-            var topicArns = topics.ToList();
-
             Connect(initSNS: false, initSQS: true);
 
-            GenerateSqsAccessPolicyAsync(topicArns, _queueUrl)
-                .GetAwaiter().GetResult();
-
-            _snsClient.SubscribeQueueToTopicsAsync(topicArns, _sqsClient, _queueUrl)
+            _snsClient.SubscribeQueueToTopicsAsync(topics.ToList(), _sqsClient, _queueUrl)
                 .GetAwaiter().GetResult();
         }
 
@@ -225,6 +223,8 @@ namespace DotNetCore.CAP.AmazonSQS
 
         private async Task GenerateSqsAccessPolicyAsync(IEnumerable<string> topicArns, string sqsQueueUrl)
         {
+            Connect(initSNS: false, initSQS: true);
+
             var queueAttributes = await _sqsClient.GetAttributesAsync(sqsQueueUrl).ConfigureAwait(false);
 
             var sqsQueueArn = queueAttributes["QueueArn"];
