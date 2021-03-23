@@ -43,17 +43,17 @@ namespace DotNetCore.CAP.AmazonSQS
 
         public BrokerAddress BrokerAddress => new BrokerAddress("AmazonSQS", _queueUrl);
 
-        public void Subscribe(IEnumerable<string> topics)
+        public ICollection<string> FetchTopics(IEnumerable<string> topicNames)
         {
-            if (topics == null)
+            if (topicNames == null)
             {
-                throw new ArgumentNullException(nameof(topics));
+                throw new ArgumentNullException(nameof(topicNames));
             }
-
+            
             Connect(initSNS: true, initSQS: false);
-
+            
             var topicArns = new List<string>();
-            foreach (var topic in topics)
+            foreach (var topic in topicNames)
             {
                 var createTopicRequest = new CreateTopicRequest(topic.NormalizeForAws());
 
@@ -61,6 +61,18 @@ namespace DotNetCore.CAP.AmazonSQS
 
                 topicArns.Add(createTopicResponse.TopicArn);
             }
+
+            return topicArns;
+        }
+
+        public void Subscribe(IEnumerable<string> topics)
+        {
+            if (topics == null)
+            {
+                throw new ArgumentNullException(nameof(topics));
+            }
+
+            var topicArns = topics.ToList();
 
             Connect(initSNS: false, initSQS: true);
 
