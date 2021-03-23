@@ -75,6 +75,7 @@ namespace DotNetCore.CAP.Internal
 
                 for (int i = 0; i < _options.ConsumerThreadCount; i++)
                 {
+                    var topicIds = topics.Select(t => t);
                     Task.Factory.StartNew(() =>
                     {
                         try
@@ -85,7 +86,7 @@ namespace DotNetCore.CAP.Internal
 
                                 RegisterMessageProcessor(client);
 
-                                client.Subscribe(topics);
+                                client.Subscribe(topicIds);
 
                                 client.Listening(_pollingDelay, _cts.Token);
                             }

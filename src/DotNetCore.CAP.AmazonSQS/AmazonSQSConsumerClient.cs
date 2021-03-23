@@ -62,7 +62,7 @@ namespace DotNetCore.CAP.AmazonSQS
                 topicArns.Add(createTopicResponse.TopicArn);
             }
             
-            GenerateSqsAccessPolicyAsync(topicArns, _queueUrl)
+            GenerateSqsAccessPolicyAsync(topicArns)
                 .GetAwaiter().GetResult();
 
             return topicArns;
@@ -75,7 +75,7 @@ namespace DotNetCore.CAP.AmazonSQS
                 throw new ArgumentNullException(nameof(topics));
             }
 
-            Connect(initSNS: false, initSQS: true);
+            Connect();
 
             _snsClient.SubscribeQueueToTopicsAsync(topics.ToList(), _sqsClient, _queueUrl)
                 .GetAwaiter().GetResult();
@@ -221,11 +221,11 @@ namespace DotNetCore.CAP.AmazonSQS
             return Task.CompletedTask;
         }
 
-        private async Task GenerateSqsAccessPolicyAsync(IEnumerable<string> topicArns, string sqsQueueUrl)
+        private async Task GenerateSqsAccessPolicyAsync(IEnumerable<string> topicArns)
         {
             Connect(initSNS: false, initSQS: true);
 
-            var queueAttributes = await _sqsClient.GetAttributesAsync(sqsQueueUrl).ConfigureAwait(false);
+            var queueAttributes = await _sqsClient.GetAttributesAsync(_queueUrl).ConfigureAwait(false);
 
             var sqsQueueArn = queueAttributes["QueueArn"];
 
@@ -246,7 +246,7 @@ namespace DotNetCore.CAP.AmazonSQS
             policy.CompactSqsPermissions(sqsQueueArn);
 
             var setAttributes = new Dictionary<string, string> { { "Policy", policy.ToJson() } };
-            await _sqsClient.SetAttributesAsync(sqsQueueUrl, setAttributes).ConfigureAwait(false);
+            await _sqsClient.SetAttributesAsync(_queueUrl, setAttributes).ConfigureAwait(false);
         }
 
         #endregion
