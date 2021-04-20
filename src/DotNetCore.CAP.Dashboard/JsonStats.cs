@@ -26,19 +26,8 @@ namespace DotNetCore.CAP.Dashboard
                 var value = metric.Func(page);
                 result.Add(metric.Name, value);
             }
-             
-            var settings = new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                Converters = new JsonConverter[]
-                {
-                    new StringEnumConverter
-                    {
-                        NamingStrategy = new CamelCaseNamingStrategy()
-                    }
-                }
-            };
-            var serialized = JsonConvert.SerializeObject(result, settings);
+
+            var serialized = JsonSerializer.Serialize(result, JsonSerializeOptions.Default);
 
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(serialized);
