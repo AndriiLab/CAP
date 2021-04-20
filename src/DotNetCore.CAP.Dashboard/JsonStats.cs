@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.Serialization;
 
 namespace DotNetCore.CAP.Dashboard
 {
@@ -27,7 +25,7 @@ namespace DotNetCore.CAP.Dashboard
                 result.Add(metric.Name, value);
             }
 
-            var serialized = JsonSerializer.Serialize(result, JsonSerializeOptions.Default);
+            var serialized = JsonConvert.SerializeObject(result, JsonSerializeOptions.Default);
 
             context.Response.ContentType = "application/json";
             await context.Response.WriteAsync(serialized);

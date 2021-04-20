@@ -1,5 +1,6 @@
 using System;
 using DotNetCore.CAP;
+using Newtonsoft.Json;
 
 namespace MyConsumerSelector
 {
@@ -14,28 +15,28 @@ namespace MyConsumerSelector
         [MessageSubscription("message.string")]
         public void String(Message<string> message)
         {
-            Console.WriteLine($"String: {System.Text.Json.JsonSerializer.Serialize(message)}");
+            Console.WriteLine($"String: {JsonConvert.SerializeObject(message)}");
         }
         
         [MessageSubscription("message.datetime")]
         public void Date(Message<DateTime> message, [FromCap] CapHeader header)
         {
-            Console.WriteLine($"Date: {System.Text.Json.JsonSerializer.Serialize(message)}");
-            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(header));
+            Console.WriteLine($"Date: {JsonConvert.SerializeObject(message)}");
+            Console.WriteLine(JsonConvert.SerializeObject(header));
         }
         
         [MessageSubscription("message.bytes")]
         public void Bytes(Message<byte[]> message, [FromCap] CapHeader header)
         {
-            Console.WriteLine($"Bytes: {System.Text.Json.JsonSerializer.Serialize(message)}");
-            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(header));
+            Console.WriteLine($"Bytes: {JsonConvert.SerializeObject(message)}");
+            Console.WriteLine(JsonConvert.SerializeObject(header));
         }
 
         [CapSubscribe("cap")]
         public void Cap(string message, [FromCap] CapHeader header)
         {
             Console.WriteLine($"Cap {message}");
-            Console.WriteLine(System.Text.Json.JsonSerializer.Serialize(header));
+            Console.WriteLine(JsonConvert.SerializeObject(header));
         }
     }
 

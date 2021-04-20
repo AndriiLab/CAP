@@ -2,7 +2,7 @@
 {
     public class BuildVersion
     {
-        public BuildVersion(int major, int minor, int patch, string quality)
+        public BuildVersion(int major, int minor, int patch, int quality, string suffix)
         {
             Major = major;
             Minor = minor;
@@ -16,18 +16,13 @@
 
         public int Patch { get; set; }
 
-        public string Quality { get; set; }
+        public int Quality { get; set; }
 
         public string Suffix { get; set; }
 
-        public string VersionWithoutQuality()
-        {
-            return $"{Major}.{Minor}.{Patch}";
-        }
-
         public string Version()
         {
-            return VersionWithoutQuality() + (Quality == null ? string.Empty : $"-{Quality}");
+            return $"{Major}.{Minor}.{Patch}.{Quality}";
         }
 
         public string VersionWithSuffix()

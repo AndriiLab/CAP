@@ -49,15 +49,15 @@ namespace BuildScript
                 .AddCoreTask(x => x.Build()
                     .InformationalVersion(BuildVersion.VersionWithSuffix()));
 
-            var tests = context.CreateTarget("Tests")
-                .SetDescription("Runs all Cap tests.")
-                .ForEach(TestProjectFiles,
-                    (projectFile, target) =>
-                    {
-                        target.AddCoreTask(x => x.Test()
-                            .Project(projectFile)
-                            .NoBuild());
-                    });
+            // var tests = context.CreateTarget("Tests")
+            //     .SetDescription("Runs all Cap tests.")
+            //     .ForEach(TestProjectFiles,
+            //         (projectFile, target) =>
+            //         {
+            //             target.AddCoreTask(x => x.Test()
+            //                 .Project(projectFile)
+            //                 .NoBuild());
+            //         });
 
           var pack = context.CreateTarget("Pack")
               .SetDescription("Creates nuget packages for Cap.")
@@ -74,7 +74,7 @@ namespace BuildScript
           context.CreateTarget("Default")
               .SetDescription("Runs all targets.")
               .SetAsDefault()
-              .DependsOn(clean, restore, build, tests, pack);
+              .DependsOn(clean, restore, build, pack);
         }
     }
 }

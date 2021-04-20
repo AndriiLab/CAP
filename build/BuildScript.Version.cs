@@ -19,9 +19,9 @@ namespace BuildScript
             var versionMinor = doc.DocumentElement.SelectSingleNode("/Project/PropertyGroup/VersionMinor").InnerText;
             var versionPatch = doc.DocumentElement.SelectSingleNode("/Project/PropertyGroup/VersionPatch").InnerText;
             var versionQuality = doc.DocumentElement.SelectSingleNode("/Project/PropertyGroup/VersionQuality").InnerText;
-            versionQuality = string.IsNullOrWhiteSpace(versionQuality) ? null : versionQuality;
+            var versionSuffix = doc.DocumentElement.SelectSingleNode("/Project/PropertyGroup/VersionPostfix").InnerText;
 
-            var suffix = versionQuality;
+            var suffix = versionSuffix;
 
             bool isCi = false;
             bool isTagged = false;
@@ -43,8 +43,7 @@ namespace BuildScript
 
             suffix = string.IsNullOrWhiteSpace(suffix) ? null : suffix;
 
-            var version = new BuildVersion(int.Parse(versionMajor), int.Parse(versionMinor), int.Parse(versionPatch), versionQuality);
-            version.Suffix = suffix;
+            var version = new BuildVersion(int.Parse(versionMajor), int.Parse(versionMinor), int.Parse(versionPatch), int.Parse(versionQuality), suffix);
 
             return version;
         }
