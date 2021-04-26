@@ -4,7 +4,7 @@
 		<VersionMinor>1</VersionMinor>
 		<VersionPatch>2</VersionPatch>
 		<VersionQuality>9</VersionQuality>
-		<VersionPostfix>202104191724</VersionPostfix>
+		<VersionPostfix>202104261839</VersionPostfix>
 		<VersionPrefix>$(VersionMajor).$(VersionMinor).$(VersionPatch).$(VersionQuality)-$(VersionPostfix)</VersionPrefix>
 	</PropertyGroup>
 </Project>
